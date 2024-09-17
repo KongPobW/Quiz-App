@@ -1,6 +1,7 @@
 package com.example.quizapp.service;
 
 import com.example.quizapp.classes.QuestionWrapper;
+import com.example.quizapp.classes.Response;
 import com.example.quizapp.dao.QuestionDao;
 import com.example.quizapp.dao.QuizDao;
 import com.example.quizapp.model.Question;
@@ -47,5 +48,23 @@ public class QuizService {
         }
 
         return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateScore(int id, List<Response> responses) {
+
+        Optional<Quiz> quiz = quizDao.findById(id);
+        List<Question> questions = quiz.get().getQuestions();
+
+        int index = 0;
+        int right = 0;
+
+        for (Response response : responses) {
+            if (response.getResponse().equals(questions.get(index).getAnswer())) {
+                right++;
+            }
+            index++;
+        }
+
+        return new ResponseEntity<>(right, HttpStatus.OK);
     }
 }
